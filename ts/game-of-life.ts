@@ -5,9 +5,9 @@ class Renderer {
 
     constructor() {
         this.canvas = document.getElementById('mainCanvas') as HTMLCanvasElement
-        this.context = this.canvas.getContext('2d')
-        this.context.fillStyle = "FF0000"
-        this.context.fillRect(0, 0, 150, 75)
+        this.canvas.width = window.innerWidth
+        this.canvas.height = window.innerHeight
+        this.context = this.canvas.getContext('2d') as CanvasRenderingContext2D
     }
 }
 
