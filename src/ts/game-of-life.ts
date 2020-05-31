@@ -189,11 +189,30 @@ function main() {
         renderer.render(game, cellSize, Color.RED)
     }
 
-    // Update generations every second and re-render.
+    let pressedKeys = new Set()
+    const pauseKeyCode = 32 // Spacebar
+    var paused = false
+    
+    // Register an event listener to toggle the 'pause' state.
+    document.onkeydown = function(event) {        
+        if (event.keyCode == pauseKeyCode && !pressedKeys.has(pauseKeyCode)) {
+            paused = !paused
+            pressedKeys.add(pauseKeyCode)
+        }
+    }
+
+    // Register an event listener to remove any pressed keys from the cache.
+    document.onkeyup = function(event) {        
+        pressedKeys.delete(event.keyCode)
+    }
+
+    // Update generations and re-render.
     window.setInterval(function() {
-        game.nextGeneration()
-        renderer.render(game, cellSize, Color.RED)
-    }, 3_500)
+        if (!paused) {
+            game.nextGeneration()
+            renderer.render(game, cellSize, Color.RED)
+        }
+    }, 100)
 }
 
 // Register the main function to run when the page finishes loading.
