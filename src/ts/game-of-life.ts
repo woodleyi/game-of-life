@@ -50,6 +50,23 @@ enum Color {
     BLUE = "#0000FF"
 }
 
+class CellLocation {
+    private _row: number
+    private _column: number
+
+    constructor(row: number, column: number) {
+        this._row = row
+        this._column = column
+    }
+
+    get row() {
+        return this._row
+    }
+
+    get column() {
+        return this._column
+    }
+}
 
 class Cell {
     private state: CellState
@@ -69,16 +86,27 @@ class Cell {
 
 
 class Game {
-    private cells: Cell[][] = []
+    private numNeighborsToSurvive = new Set([2,3])
+    private numHorizontalCells: number
+    private numVerticalCells: number
+    private cells: Cell[][]
 
     constructor(numHorizontalCells: number, numVerticalCells: number) {
-        for (var rowIdx=0; rowIdx < numVerticalCells; rowIdx++) {
+        this.numHorizontalCells = numHorizontalCells
+        this.numVerticalCells = numVerticalCells
+        this.cells = this.emptyGeneration()
+    }
+
+    private emptyGeneration(): Cell[][] {
+        let generation: Cell[][] = []
+        for (var rowIdx=0; rowIdx < this.numVerticalCells; rowIdx++) {
             let row: Cell[] = []
-            for (var columnIdx=0; columnIdx < numHorizontalCells; columnIdx++) {
+            for (var columnIdx=0; columnIdx < this.numHorizontalCells; columnIdx++) {
                 row.push(new Cell(CellState.DEAD))
             }
-            this.cells.push(row)
+            generation.push(row)
         }
+        return generation
     }
 
     public cellAt(row: number, column: number): Cell {
@@ -91,6 +119,46 @@ class Game {
             cell.toggleState()
         } else { // falsey value evaluated - log the offender.
             console.error(`The cell at row ${row}, column ${column} is ${cell}.`)
+        }
+    }
+
+    public nextGeneration() {
+        let newGeneration = this.emptyGeneration()
+
+        for (var rowIdx=0; rowIdx < this.numVerticalCells; rowIdx++) {
+            for (var columnIdx=0; columnIdx < this.numHorizontalCells; columnIdx++) {
+                let numLiveNeighbors = this.calculateNumLiveNeighbors(rowIdx, columnIdx)
+                let newState = this.determineNewCellState(this.cellAt(rowIdx, columnIdx), numLiveNeighbors)
+                newGeneration[rowIdx][columnIdx] = new Cell(newState)
+            }
+        }
+
+        this.cells = newGeneration
+    }
+
+    private calculateNumLiveNeighbors(row: number, column: number): number {
+        return this.calculateNumLiveCells(
+            new CellLocation(row-1,column-1), new CellLocation(row-1,column), new CellLocation(row-1,column+1),
+            new CellLocation(row,column-1),                                   new CellLocation(row,column+1),
+            new CellLocation(row+1,column-1), new CellLocation(row+1,column), new CellLocation(row+1,column+1)
+        )
+    }
+
+    private calculateNumLiveCells(...cellLocations: CellLocation[]): number {
+        var numLiveNeighbors = 0
+        cellLocations.forEach(cellLocation => {
+            if (this.cellAt(cellLocation.row, cellLocation.column)?.isAlive()) {
+                numLiveNeighbors++
+            }
+        });
+        return numLiveNeighbors
+    }
+
+    private determineNewCellState(cell: Cell, numLiveNeighbors: number): CellState {
+        if (cell.isAlive()) {
+            return (this.numNeighborsToSurvive.has(numLiveNeighbors)) ? CellState.ALIVE : CellState.DEAD
+        } else {
+            return (numLiveNeighbors == 3) ? CellState.ALIVE : CellState.DEAD    
         }
     }
 }
@@ -109,6 +177,9 @@ function main() {
     let game = new Game(numHorizontalCells, numVerticalCells)
 
     let renderer = new CanvasRenderer(canvas)
+
+    // Initial render.
+    renderer.render(game, cellSize, Color.RED)
     
     // Register an event listener to toggle cell state upon mouse click.
     canvas.onclick = function (event: MouseEvent) {
@@ -118,8 +189,11 @@ function main() {
         renderer.render(game, cellSize, Color.RED)
     }
 
-    // Initial render.
-    renderer.render(game, cellSize, Color.RED)
+    // Update generations every second and re-render.
+    window.setInterval(function() {
+        game.nextGeneration()
+        renderer.render(game, cellSize, Color.RED)
+    }, 3_500)
 }
 
 // Register the main function to run when the page finishes loading.

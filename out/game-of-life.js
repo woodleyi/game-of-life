@@ -1,10 +1,10 @@
 "use strict";
-var CanvasRenderer = /** @class */ (function () {
-    function CanvasRenderer(canvas) {
+class CanvasRenderer {
+    constructor(canvas) {
         this.canvas = canvas;
         this.context = this.canvas.getContext('2d');
     }
-    CanvasRenderer.prototype.render = function (game, cellSize, cellColor) {
+    render(game, cellSize, cellColor) {
         var _a;
         // Clear the canvas.
         this.context.fillStyle = Color.WHITE;
@@ -13,21 +13,20 @@ var CanvasRenderer = /** @class */ (function () {
         this.context.strokeStyle = Color.GREY;
         this.context.fillStyle = cellColor;
         // Render.
-        var numHorizontalCells = Math.floor(this.canvas.width / cellSize);
-        var numVerticalCells = Math.floor(this.canvas.height / cellSize);
+        let numHorizontalCells = Math.floor(this.canvas.width / cellSize);
+        let numVerticalCells = Math.floor(this.canvas.height / cellSize);
         for (var row = 0; row < numVerticalCells; row++) {
-            var y = row * cellSize;
+            let y = row * cellSize;
             for (var column = 0; column < numHorizontalCells; column++) {
-                var x = column * cellSize;
+                let x = column * cellSize;
                 if ((_a = game.cellAt(row, column)) === null || _a === void 0 ? void 0 : _a.isAlive()) {
                     this.context.fillRect(x, y, cellSize, cellSize);
                 }
                 this.context.strokeRect(x, y, cellSize, cellSize);
             }
         }
-    };
-    return CanvasRenderer;
-}());
+    }
+}
 var CellState;
 (function (CellState) {
     CellState[CellState["ALIVE"] = 0] = "ALIVE";
@@ -42,64 +41,118 @@ var Color;
     Color["GREEN"] = "#00FF00";
     Color["BLUE"] = "#0000FF";
 })(Color || (Color = {}));
-var Cell = /** @class */ (function () {
-    function Cell(state) {
+class CellLocation {
+    constructor(row, column) {
+        this._row = row;
+        this._column = column;
+    }
+    get row() {
+        return this._row;
+    }
+    get column() {
+        return this._column;
+    }
+}
+class Cell {
+    constructor(state) {
         this.state = state;
     }
-    Cell.prototype.isAlive = function () {
+    isAlive() {
         return this.state == CellState.ALIVE;
-    };
-    Cell.prototype.toggleState = function () {
+    }
+    toggleState() {
         this.state = this.isAlive() ? CellState.DEAD : CellState.ALIVE;
-    };
-    return Cell;
-}());
-var Game = /** @class */ (function () {
-    function Game(numHorizontalCells, numVerticalCells) {
-        this.cells = [];
-        for (var rowIdx = 0; rowIdx < numVerticalCells; rowIdx++) {
-            var row = [];
-            for (var columnIdx = 0; columnIdx < numHorizontalCells; columnIdx++) {
+    }
+}
+class Game {
+    constructor(numHorizontalCells, numVerticalCells) {
+        this.numNeighborsToSurvive = new Set([2, 3]);
+        this.numHorizontalCells = numHorizontalCells;
+        this.numVerticalCells = numVerticalCells;
+        this.cells = this.emptyGeneration();
+    }
+    emptyGeneration() {
+        let generation = [];
+        for (var rowIdx = 0; rowIdx < this.numVerticalCells; rowIdx++) {
+            let row = [];
+            for (var columnIdx = 0; columnIdx < this.numHorizontalCells; columnIdx++) {
                 row.push(new Cell(CellState.DEAD));
             }
-            this.cells.push(row);
+            generation.push(row);
         }
+        return generation;
     }
-    Game.prototype.cellAt = function (row, column) {
+    cellAt(row, column) {
         var _a;
         return (_a = this.cells[row]) === null || _a === void 0 ? void 0 : _a[column];
-    };
-    Game.prototype.toggleCellState = function (row, column) {
+    }
+    toggleCellState(row, column) {
         var _a;
-        var cell = (_a = this.cells[row]) === null || _a === void 0 ? void 0 : _a[column];
+        let cell = (_a = this.cells[row]) === null || _a === void 0 ? void 0 : _a[column];
         if (cell) {
             cell.toggleState();
         }
         else { // falsey value evaluated - log the offender.
-            console.error("The cell at row " + row + ", column " + column + " is " + cell + ".");
+            console.error(`The cell at row ${row}, column ${column} is ${cell}.`);
         }
-    };
-    return Game;
-}());
+    }
+    nextGeneration() {
+        let newGeneration = this.emptyGeneration();
+        for (var rowIdx = 0; rowIdx < this.numVerticalCells; rowIdx++) {
+            for (var columnIdx = 0; columnIdx < this.numHorizontalCells; columnIdx++) {
+                let numLiveNeighbors = this.calculateNumLiveNeighbors(rowIdx, columnIdx);
+                let newState = this.determineNewCellState(this.cellAt(rowIdx, columnIdx), numLiveNeighbors);
+                newGeneration[rowIdx][columnIdx] = new Cell(newState);
+            }
+        }
+        this.cells = newGeneration;
+    }
+    calculateNumLiveNeighbors(row, column) {
+        return this.calculateNumLiveCells(new CellLocation(row - 1, column - 1), new CellLocation(row - 1, column), new CellLocation(row - 1, column + 1), new CellLocation(row, column - 1), new CellLocation(row, column + 1), new CellLocation(row + 1, column - 1), new CellLocation(row + 1, column), new CellLocation(row + 1, column + 1));
+    }
+    calculateNumLiveCells(...cellLocations) {
+        var numLiveNeighbors = 0;
+        cellLocations.forEach(cellLocation => {
+            var _a;
+            if ((_a = this.cellAt(cellLocation.row, cellLocation.column)) === null || _a === void 0 ? void 0 : _a.isAlive()) {
+                numLiveNeighbors++;
+            }
+        });
+        return numLiveNeighbors;
+    }
+    determineNewCellState(cell, numLiveNeighbors) {
+        if (cell.isAlive()) {
+            return (this.numNeighborsToSurvive.has(numLiveNeighbors)) ? CellState.ALIVE : CellState.DEAD;
+        }
+        else {
+            return (numLiveNeighbors == 3) ? CellState.ALIVE : CellState.DEAD;
+        }
+    }
+}
 function main() {
-    var cellSize = 32;
-    var canvas = document.getElementById('mainCanvas');
+    const cellSize = 32;
+    let canvas = document.getElementById('mainCanvas');
     // Adjust the canvas dimensions to be factors of 'cellSize'.
     canvas.width = window.innerWidth - (window.innerWidth % cellSize);
     canvas.height = window.innerHeight - (window.innerHeight % cellSize);
-    var numHorizontalCells = canvas.width / cellSize;
-    var numVerticalCells = canvas.height / cellSize;
-    var game = new Game(numHorizontalCells, numVerticalCells);
-    var renderer = new CanvasRenderer(canvas);
+    let numHorizontalCells = canvas.width / cellSize;
+    let numVerticalCells = canvas.height / cellSize;
+    let game = new Game(numHorizontalCells, numVerticalCells);
+    let renderer = new CanvasRenderer(canvas);
+    // Initial render.
+    renderer.render(game, cellSize, Color.RED);
     // Register an event listener to toggle cell state upon mouse click.
     canvas.onclick = function (event) {
-        var row = Math.floor(event.clientY / cellSize);
-        var column = Math.floor(event.clientX / cellSize);
+        let row = Math.floor(event.clientY / cellSize);
+        let column = Math.floor(event.clientX / cellSize);
         game.toggleCellState(row, column);
         renderer.render(game, cellSize, Color.RED);
     };
-    // Initial render.
-    renderer.render(game, cellSize, Color.RED);
+    // Update generations every second and re-render.
+    window.setInterval(function () {
+        game.nextGeneration();
+        renderer.render(game, cellSize, Color.RED);
+    }, 3500);
 }
 // Register the main function to run when the page finishes loading.
 window.onload = main;
