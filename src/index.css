@@ -1,6 +1,42 @@
 
-html, body {
-    margin: 0 !important;
-    padding: 0 !important;
-    overflow: hidden;
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  overflow: hidden;
+  height: 100%;
+  font-family: 'Slabo 27px', serif;
+  color: #E9E9E9;
+}
+
+.hidden-menu {
+  background-color: #1E90FF;
+  width: 25%;
+  height: 100%;
+  position: absolute;
+  box-shadow: 1px 0px 1px #1F0F2E;
+  top: 0;
+  left: -25%;
+  transition: left 0.35s ease-out;
+}
+
+#inner-hidden {
+  width: 80%;
+  margin: 3% auto;
+  text-align: center;
+}
+
+.hidden {
+  left: 0px;
+  z-index: 100
+}
+
+.fade {
+  background-color: rgba(0,0,0,0.75);
+}
+
+#controls-container {
+    text-align: left;
 }

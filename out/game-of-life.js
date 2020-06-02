@@ -131,7 +131,7 @@ class Game {
 }
 function main() {
     const cellSize = 32;
-    let canvas = document.getElementById('mainCanvas');
+    let canvas = document.getElementById('main-canvas');
     // Adjust the canvas dimensions to be factors of 'cellSize'.
     canvas.width = window.innerWidth - (window.innerWidth % cellSize);
     canvas.height = window.innerHeight - (window.innerHeight % cellSize);
@@ -156,6 +156,13 @@ function main() {
         if (event.keyCode == pauseKeyCode && !pressedKeys.has(pauseKeyCode)) {
             paused = !paused;
             pressedKeys.add(pauseKeyCode);
+        }
+        else if (event.keyCode == 65 && !pressedKeys.has(65)) {
+            console.log("HEY THERE");
+            var hiddenMenu = document.querySelector('.hidden-menu');
+            var rootContainer = document.getElementById('root-container');
+            hiddenMenu === null || hiddenMenu === void 0 ? void 0 : hiddenMenu.classList.toggle('hidden');
+            rootContainer === null || rootContainer === void 0 ? void 0 : rootContainer.classList.toggle('fade');
         }
     };
     // Register an event listener to remove any pressed keys from the cache.

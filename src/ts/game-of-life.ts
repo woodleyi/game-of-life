@@ -167,7 +167,7 @@ class Game {
 function main() {
     const cellSize = 32
     
-    let canvas = document.getElementById('mainCanvas') as HTMLCanvasElement
+    let canvas = document.getElementById('main-canvas') as HTMLCanvasElement
     // Adjust the canvas dimensions to be factors of 'cellSize'.
     canvas.width = window.innerWidth - (window.innerWidth % cellSize)
     canvas.height = window.innerHeight - (window.innerHeight % cellSize)
@@ -198,6 +198,13 @@ function main() {
         if (event.keyCode == pauseKeyCode && !pressedKeys.has(pauseKeyCode)) {
             paused = !paused
             pressedKeys.add(pauseKeyCode)
+        } else if (event.keyCode == 65 && !pressedKeys.has(65)) {
+            console.log("HEY THERE")
+            var hiddenMenu = document.querySelector('.hidden-menu');
+            var rootContainer = document.getElementById('root-container');
+            
+            hiddenMenu?.classList.toggle('hidden');
+            rootContainer?.classList.toggle('fade');
         }
     }
 

@@ -6,7 +6,22 @@
         <link rel="stylesheet" type="text/css" href="index.css">
     </head>
     <body>
-        <canvas id="mainCanvas"></canvas>
+        <div id="root-container">
+            <div id="canvas-container">
+                <canvas id="main-canvas"></canvas>
+            </div>
+            <div class="hidden-menu">
+                <div id="inner-hidden">
+                    <h1>Game of Life</h1>
+                    <div id="controls-container">
+                        <h3>Controls</h3>
+                        <ul>
+                            <li>Pause - SPACE</li>
+                        </ul>
+                    </div>
+                </div>
+              </div>
+        </div>
         <script type="text/javascript" src="../out/game-of-life.js"></script>
     </body>
 </html>
