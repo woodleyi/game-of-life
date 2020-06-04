@@ -7,4 +7,10 @@ html, body {
 
 footer {
     text-align: center;
+    align-content: center;
+}
+
+#pauseText, #gameSpeedSlider {
+    display: inline-block;
+    padding: 0px 2% 0px 2%
 }

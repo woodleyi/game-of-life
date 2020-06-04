@@ -164,12 +164,19 @@ function main() {
         pressedKeys.delete(event.keyCode);
     };
     // Update generations and re-render.
-    window.setInterval(function () {
+    let baseGameSpeed = 500;
+    var gameSpeedFactor = 1;
+    let updateFunction = function () {
         if (!paused) {
             game.nextGeneration();
             renderer.render(game, cellSize, Color.RED);
         }
-    }, 100);
+        let sliderElement = document.getElementById("gameSpeedSlider");
+        gameSpeedFactor = sliderElement.valueAsNumber;
+        window.setTimeout(updateFunction, baseGameSpeed / gameSpeedFactor);
+    };
+    // Run initial update.
+    window.setTimeout(updateFunction, baseGameSpeed / gameSpeedFactor);
 }
 // Register the main function to run when the page finishes loading.
 window.onload = main;
