@@ -132,9 +132,8 @@ class Game {
 function main() {
     const cellSize = 32;
     let canvas = document.getElementById('mainCanvas');
-    // Adjust the canvas dimensions to be factors of 'cellSize'.
-    canvas.width = window.innerWidth - (window.innerWidth % cellSize);
-    canvas.height = window.innerHeight - (window.innerHeight % cellSize);
+    canvas.width = window.innerWidth;
+    canvas.height = canvas.width * 0.5;
     let numHorizontalCells = canvas.width / cellSize;
     let numVerticalCells = canvas.height / cellSize;
     let game = new Game(numHorizontalCells, numVerticalCells);
@@ -156,6 +155,8 @@ function main() {
         if (event.keyCode == pauseKeyCode && !pressedKeys.has(pauseKeyCode)) {
             paused = !paused;
             pressedKeys.add(pauseKeyCode);
+            let pauseTextElement = document.getElementById("pauseText");
+            pauseTextElement.innerText = (paused ? "Unpause" : "Pause") + ": SPACE";
         }
     };
     // Register an event listener to remove any pressed keys from the cache.

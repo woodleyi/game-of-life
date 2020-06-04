@@ -167,10 +167,9 @@ class Game {
 function main() {
     const cellSize = 32
     
-    let canvas = document.getElementById('mainCanvas') as HTMLCanvasElement
-    // Adjust the canvas dimensions to be factors of 'cellSize'.
-    canvas.width = window.innerWidth - (window.innerWidth % cellSize)
-    canvas.height = window.innerHeight - (window.innerHeight % cellSize)
+    let canvas = document.getElementById('mainCanvas') as HTMLCanvasElement    
+    canvas.width = window.innerWidth
+    canvas.height = canvas.width * 0.5
 
     let numHorizontalCells = canvas.width / cellSize
     let numVerticalCells = canvas.height / cellSize
@@ -198,6 +197,8 @@ function main() {
         if (event.keyCode == pauseKeyCode && !pressedKeys.has(pauseKeyCode)) {
             paused = !paused
             pressedKeys.add(pauseKeyCode)
+            let pauseTextElement = document.getElementById("pauseText") as HTMLHeadingElement
+            pauseTextElement.innerText = ( paused ? "Unpause" : "Pause" ) + ": SPACE"
         }
     }
 
