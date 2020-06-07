@@ -166,10 +166,14 @@ class Game {
 
 function main() {
     const cellSize = 32
+
+    let canvasDiv = document.getElementById('canvas-div') as HTMLDivElement
+    let canvasRect = canvasDiv.getBoundingClientRect()
     
     let canvas = document.getElementById('mainCanvas') as HTMLCanvasElement    
-    canvas.width = window.innerWidth
-    canvas.height = canvas.width * 0.5
+    // TODO: Round up width / height to nearest factor of cellSize?
+    canvas.width = canvasRect.width
+    canvas.height = canvasRect.height
 
     let numHorizontalCells = canvas.width / cellSize
     let numVerticalCells = canvas.height / cellSize
@@ -183,7 +187,7 @@ function main() {
     // Register an event listener to toggle cell state upon mouse click.
     canvas.onclick = function (event: MouseEvent) {
         let row = Math.floor(event.clientY / cellSize)
-        let column = Math.floor(event.clientX / cellSize)
+        let column = Math.floor( (event.clientX - canvasRect.x) / cellSize)
         game.toggleCellState(row, column)
         renderer.render(game, cellSize, Color.RED)
     }

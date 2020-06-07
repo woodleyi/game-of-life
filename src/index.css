@@ -1,16 +1,27 @@
 
-html, body {
-    margin: 0 !important;
-    padding: 0 !important;
+html {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    height: 100%;
+}
+
+#root {
+    display: flex;
     overflow: hidden;
+    height: 100%;
 }
 
-footer {
-    text-align: center;
-    align-content: center;
+#root > div {
+    border: 1px solid
 }
 
-#pauseText, #gameSpeedSlider {
-    display: inline-block;
-    padding: 0px 2% 0px 2%
+#controls-div {
+    
+}
+
+#canvas-div {
+    flex: 1;
 }
