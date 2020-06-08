@@ -6,10 +6,14 @@
         <link rel="stylesheet" type="text/css" href="index.css">
     </head>
     <body>
-        <div id="root">
+        <div id="root" class="flex">
             <div id="controls-div">
-                <h3 id="pauseText">Pause: SPACE</h3>
-                <input id="gameSpeedSlider" type="range" min="0.5" max="1.5" value="1" step="0.5">
+                <div id="pause-control-div" class="flex">
+                    <p>Press <kbd>Space</kbd> to pause & unpause.</p>
+                </div>
+                <div id="game-speed-control-div" class="flex">
+                    <p>Speed <input id="gameSpeedSlider" type="range" min="0.5" max="1.5" value="1" step="0.5"><output for="gameSpeedSlider" class="invert-colors">50%</output></p>
+                </div>
             </div>
             <div id="canvas-div">
                 <canvas id="mainCanvas"></canvas>
