@@ -167,19 +167,21 @@ function main() {
         pressedKeys.delete(event.keyCode);
     };
     // Update generations and re-render.
-    let baseGameSpeed = 500;
-    var gameSpeedFactor = 1;
+    let baseGameSpeedInMillis = 100;
+    let gameSpeedSlider = document.getElementById('gameSpeedSlider');
+    let gameSpeedSliderOutput = document.getElementById('game-speed-slider-output');
+    var gameSpeedPercentage = gameSpeedSlider.valueAsNumber;
     let updateFunction = function () {
         if (!paused) {
             game.nextGeneration();
             renderer.render(game, cellSize, Color.RED);
         }
-        let sliderElement = document.getElementById("gameSpeedSlider");
-        gameSpeedFactor = sliderElement.valueAsNumber;
-        window.setTimeout(updateFunction, baseGameSpeed / gameSpeedFactor);
+        gameSpeedPercentage = gameSpeedSlider.valueAsNumber;
+        gameSpeedSliderOutput.innerText = `${gameSpeedPercentage * 100}%`;
+        window.setTimeout(updateFunction, baseGameSpeedInMillis / gameSpeedPercentage);
     };
     // Run initial update.
-    window.setTimeout(updateFunction, baseGameSpeed / gameSpeedFactor);
+    window.setTimeout(updateFunction, baseGameSpeedInMillis / gameSpeedPercentage);
 }
 // Register the main function to run when the page finishes loading.
 window.onload = main;

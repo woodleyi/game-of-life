@@ -49,6 +49,7 @@ Control Sidebar
 **/
 #controls-div {
     padding: 1%;
+    white-space: nowrap;
     background-color: ghostwhite;
 }
 
