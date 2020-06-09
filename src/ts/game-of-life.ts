@@ -166,10 +166,14 @@ class Game {
 
 function main() {
     const cellSize = 32
+
+    let canvasDiv = document.getElementById('canvas-div') as HTMLDivElement
+    let canvasRect = canvasDiv.getBoundingClientRect()
     
     let canvas = document.getElementById('mainCanvas') as HTMLCanvasElement    
-    canvas.width = window.innerWidth
-    canvas.height = canvas.width * 0.5
+    // TODO: Round up width / height to nearest factor of cellSize?
+    canvas.width = canvasRect.width
+    canvas.height = canvasRect.height
 
     let numHorizontalCells = canvas.width / cellSize
     let numVerticalCells = canvas.height / cellSize
@@ -183,7 +187,7 @@ function main() {
     // Register an event listener to toggle cell state upon mouse click.
     canvas.onclick = function (event: MouseEvent) {
         let row = Math.floor(event.clientY / cellSize)
-        let column = Math.floor(event.clientX / cellSize)
+        let column = Math.floor( (event.clientX - canvasRect.x) / cellSize)
         game.toggleCellState(row, column)
         renderer.render(game, cellSize, Color.RED)
     }
@@ -208,21 +212,24 @@ function main() {
     }
 
     // Update generations and re-render.
-    let baseGameSpeed = 500
-    var gameSpeedFactor = 1
+    let baseGameSpeedInMillis = 100
+    let gameSpeedSlider = document.getElementById('gameSpeedSlider') as HTMLInputElement
+    let gameSpeedSliderOutput = document.getElementById('game-speed-slider-output') as HTMLOutputElement
+    var gameSpeedPercentage = gameSpeedSlider.valueAsNumber
+    
     let updateFunction = function() {
         if (!paused) {
             game.nextGeneration()
             renderer.render(game, cellSize, Color.RED)
         }
 
-        let sliderElement = document.getElementById("gameSpeedSlider") as HTMLInputElement
-        gameSpeedFactor = sliderElement.valueAsNumber
-        window.setTimeout(updateFunction, baseGameSpeed / gameSpeedFactor)
+        gameSpeedPercentage = gameSpeedSlider.valueAsNumber
+        gameSpeedSliderOutput.innerText = `${gameSpeedPercentage * 100}%`
+        window.setTimeout(updateFunction, baseGameSpeedInMillis / gameSpeedPercentage)
     }
 
     // Run initial update.
-    window.setTimeout(updateFunction, baseGameSpeed / gameSpeedFactor)
+    window.setTimeout(updateFunction, baseGameSpeedInMillis / gameSpeedPercentage)
 }
 
 // Register the main function to run when the page finishes loading.

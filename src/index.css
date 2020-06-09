@@ -1,16 +1,79 @@
 
+/**
+General
+**/
 html, body {
-    margin: 0 !important;
-    padding: 0 !important;
-    overflow: hidden;
+    height: 100%;
 }
 
-footer {
-    text-align: center;
-    align-content: center;
+body {
+    margin: 0;
 }
 
-#pauseText, #gameSpeedSlider {
+/* This matches the style Github uses for <kbd> elements. */
+kbd {
     display: inline-block;
-    padding: 0px 2% 0px 2%
+    padding: 3px 5px;
+    font: 11px SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace;
+        line-height: normal;
+    line-height: 10px;
+    color: #444d56;
+    vertical-align: middle;
+    background-color: #fafbfc;
+    border: 1px solid #d1d5da;
+    border-radius: 3px;
+    box-shadow: inset 0 -1px 0 #d1d5da;
+}
+
+/**
+Root
+**/
+#root {
+    overflow: hidden;
+    height: 100%;
+}
+
+#root > div {
+    border: 1px solid;
+}
+
+/**
+Canvas
+**/
+#canvas-div {
+    flex: 1;
+}
+
+/**
+Control Sidebar
+**/
+#controls-div {
+    padding: 1%;
+    white-space: nowrap;
+    background-color: ghostwhite;
+}
+
+#controls-div > * {
+    display: inline;
+    text-align: center;
+}
+
+#gameSpeedSlider {
+    vertical-align: middle;
+}
+
+/**
+Utilities
+**/
+
+/* Helper to assign "display: flex" at class-level. */
+.flex {
+    display: flex;
+}
+
+/* Helper to use white text on black background instead of black text on white background. */
+.invert-colors {
+    padding: 1%;
+    background-color: black;
+    color: white;
 }

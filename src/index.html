@@ -6,15 +6,22 @@
         <link rel="stylesheet" type="text/css" href="index.css">
     </head>
     <body>
-        <div>
-            <canvas id="mainCanvas"></canvas>
+        <div id="root" class="flex">
+            <div id="controls-div">
+                <div>
+                    <h1>Controls</h1>
+                </div>
+                <div id="pause-control-div" class="flex">
+                    <p>Press <kbd>Space</kbd> to pause & unpause.</p>
+                </div>
+                <div id="game-speed-control-div" class="flex">
+                    <p>Speed <input id="gameSpeedSlider" type="range" min="0.10" max="1.0" value="0.5" step="0.10"><output for="gameSpeedSlider" id="game-speed-slider-output" class="invert-colors">100%</output></p>
+                </div>
+            </div>
+            <div id="canvas-div">
+                <canvas id="mainCanvas"></canvas>
+            </div>
         </div>
         <script type="text/javascript" src="../out/game-of-life.js"></script>
     </body>
-    <footer>
-        <div>
-            <h3 id="pauseText">Pause: SPACE</h3>
-            <input type="range" min="0.5" max="1.5" value="1" step="0.5" class="slider" id="gameSpeedSlider">
-        </div>
-    </footer>
 </html>
