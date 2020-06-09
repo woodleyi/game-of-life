@@ -144,8 +144,7 @@ function main() {
     };
     let canvasDiv = document.getElementById('canvas-div');
     let canvasRect = canvasDiv.getBoundingClientRect();
-    let canvas = document.getElementById('mainCanvas');
-    // TODO: Round up width / height to nearest factor of cellSize?
+    let canvas = document.getElementById('main-canvas');
     canvas.width = canvasRect.width;
     canvas.height = canvasRect.height;
     let numHorizontalCells = canvas.width / minimumCellSize;
@@ -169,8 +168,8 @@ function main() {
         if (event.keyCode == pauseKeyCode && !pressedKeys.has(pauseKeyCode)) {
             paused = !paused;
             pressedKeys.add(pauseKeyCode);
-            let pauseTextElement = document.getElementById("pauseText");
-            pauseTextElement.innerText = (paused ? "Unpause" : "Pause") + ": SPACE";
+            let pauseTextElement = document.getElementById("pause-control-output");
+            pauseTextElement.innerText = paused ? "unpause" : "pause";
         }
     };
     // Register an event listener to remove any pressed keys from the cache.
@@ -179,7 +178,7 @@ function main() {
     };
     // Update generations and re-render.
     let baseGameSpeedInMillis = 100;
-    let gameSpeedSlider = document.getElementById('gameSpeedSlider');
+    let gameSpeedSlider = document.getElementById('game-speed-slider');
     let gameSpeedSliderOutput = document.getElementById('game-speed-slider-output');
     var gameSpeedPercentage = gameSpeedSlider.valueAsNumber;
     let updateFunction = function () {
@@ -187,9 +186,12 @@ function main() {
             game.nextGeneration();
             renderer.render(game, renderedCellSize, Color.RED);
         }
+        window.setTimeout(updateFunction, baseGameSpeedInMillis / gameSpeedPercentage);
+    };
+    // Register an event listener to update game speed when slider value changes.
+    gameSpeedSlider.oninput = function () {
         gameSpeedPercentage = gameSpeedSlider.valueAsNumber;
         gameSpeedSliderOutput.innerText = `${gameSpeedPercentage * 100}%`;
-        window.setTimeout(updateFunction, baseGameSpeedInMillis / gameSpeedPercentage);
     };
     // Run initial update.
     window.setTimeout(updateFunction, baseGameSpeedInMillis / gameSpeedPercentage);

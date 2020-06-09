@@ -183,8 +183,7 @@ function main() {
     let canvasDiv = document.getElementById('canvas-div') as HTMLDivElement
     let canvasRect = canvasDiv.getBoundingClientRect()
     
-    let canvas = document.getElementById('mainCanvas') as HTMLCanvasElement    
-    // TODO: Round up width / height to nearest factor of cellSize?
+    let canvas = document.getElementById('main-canvas') as HTMLCanvasElement    
     canvas.width = canvasRect.width
     canvas.height = canvasRect.height
 
@@ -214,8 +213,8 @@ function main() {
         if (event.keyCode == pauseKeyCode && !pressedKeys.has(pauseKeyCode)) {
             paused = !paused
             pressedKeys.add(pauseKeyCode)
-            let pauseTextElement = document.getElementById("pauseText") as HTMLHeadingElement
-            pauseTextElement.innerText = ( paused ? "Unpause" : "Pause" ) + ": SPACE"
+            let pauseTextElement = document.getElementById("pause-control-output") as HTMLHeadingElement
+            pauseTextElement.innerText = paused ? "unpause" : "pause"
         }
     }
 
@@ -226,7 +225,7 @@ function main() {
 
     // Update generations and re-render.
     let baseGameSpeedInMillis = 100
-    let gameSpeedSlider = document.getElementById('gameSpeedSlider') as HTMLInputElement
+    let gameSpeedSlider = document.getElementById('game-speed-slider') as HTMLInputElement
     let gameSpeedSliderOutput = document.getElementById('game-speed-slider-output') as HTMLOutputElement
     var gameSpeedPercentage = gameSpeedSlider.valueAsNumber
     
@@ -235,10 +234,13 @@ function main() {
             game.nextGeneration()
             renderer.render(game, renderedCellSize, Color.RED)
         }
+        window.setTimeout(updateFunction, baseGameSpeedInMillis / gameSpeedPercentage)
+    }
 
+    // Register an event listener to update game speed when slider value changes.
+    gameSpeedSlider.oninput = function() {
         gameSpeedPercentage = gameSpeedSlider.valueAsNumber
         gameSpeedSliderOutput.innerText = `${gameSpeedPercentage * 100}%`
-        window.setTimeout(updateFunction, baseGameSpeedInMillis / gameSpeedPercentage)
     }
 
     // Run initial update.
