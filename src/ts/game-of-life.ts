@@ -183,7 +183,7 @@ function main() {
     let canvasDiv = document.getElementById('canvas-div') as HTMLDivElement
     let canvasRect = canvasDiv.getBoundingClientRect()
     
-    let canvas = document.getElementById('mainCanvas') as HTMLCanvasElement    
+    let canvas = document.getElementById('main-canvas') as HTMLCanvasElement    
     canvas.width = canvasRect.width
     canvas.height = canvasRect.height
 

@@ -144,7 +144,7 @@ function main() {
     };
     let canvasDiv = document.getElementById('canvas-div');
     let canvasRect = canvasDiv.getBoundingClientRect();
-    let canvas = document.getElementById('mainCanvas');
+    let canvas = document.getElementById('main-canvas');
     canvas.width = canvasRect.width;
     canvas.height = canvasRect.height;
     let numHorizontalCells = canvas.width / minimumCellSize;
