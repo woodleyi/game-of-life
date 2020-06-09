@@ -130,25 +130,36 @@ class Game {
     }
 }
 function main() {
-    const cellSize = 32;
+    let zoomSlider = document.getElementById('zoom-slider');
+    let zoomSliderOutput = document.getElementById('zoom-slider-output');
+    const maximumCellSize = 64;
+    const minimumCellSize = maximumCellSize * parseFloat(zoomSlider.min);
+    // Register an event listener to update cell size when zoom changes.
+    var renderedCellSize = 32;
+    zoomSlider.oninput = function () {
+        let zoomPercentage = zoomSlider.valueAsNumber;
+        renderedCellSize = maximumCellSize * zoomPercentage;
+        zoomSliderOutput.innerText = `${zoomPercentage * 100}%`;
+        renderer.render(game, renderedCellSize, Color.RED);
+    };
     let canvasDiv = document.getElementById('canvas-div');
     let canvasRect = canvasDiv.getBoundingClientRect();
     let canvas = document.getElementById('mainCanvas');
     // TODO: Round up width / height to nearest factor of cellSize?
     canvas.width = canvasRect.width;
     canvas.height = canvasRect.height;
-    let numHorizontalCells = canvas.width / cellSize;
-    let numVerticalCells = canvas.height / cellSize;
+    let numHorizontalCells = canvas.width / minimumCellSize;
+    let numVerticalCells = canvas.height / minimumCellSize;
     let game = new Game(numHorizontalCells, numVerticalCells);
     let renderer = new CanvasRenderer(canvas);
     // Initial render.
-    renderer.render(game, cellSize, Color.RED);
+    renderer.render(game, renderedCellSize, Color.RED);
     // Register an event listener to toggle cell state upon mouse click.
     canvas.onclick = function (event) {
-        let row = Math.floor(event.clientY / cellSize);
-        let column = Math.floor((event.clientX - canvasRect.x) / cellSize);
+        let row = Math.floor(event.clientY / renderedCellSize);
+        let column = Math.floor((event.clientX - canvasRect.x) / renderedCellSize);
         game.toggleCellState(row, column);
-        renderer.render(game, cellSize, Color.RED);
+        renderer.render(game, renderedCellSize, Color.RED);
     };
     let pressedKeys = new Set();
     const pauseKeyCode = 32; // Spacebar
@@ -174,7 +185,7 @@ function main() {
     let updateFunction = function () {
         if (!paused) {
             game.nextGeneration();
-            renderer.render(game, cellSize, Color.RED);
+            renderer.render(game, renderedCellSize, Color.RED);
         }
         gameSpeedPercentage = gameSpeedSlider.valueAsNumber;
         gameSpeedSliderOutput.innerText = `${gameSpeedPercentage * 100}%`;
