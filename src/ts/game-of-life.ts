@@ -184,7 +184,6 @@ function main() {
     let canvasRect = canvasDiv.getBoundingClientRect()
     
     let canvas = document.getElementById('mainCanvas') as HTMLCanvasElement    
-    // TODO: Round up width / height to nearest factor of cellSize?
     canvas.width = canvasRect.width
     canvas.height = canvasRect.height
 
@@ -235,10 +234,13 @@ function main() {
             game.nextGeneration()
             renderer.render(game, renderedCellSize, Color.RED)
         }
+        window.setTimeout(updateFunction, baseGameSpeedInMillis / gameSpeedPercentage)
+    }
 
+    // Register an event listener to update game speed when slider value changes.
+    gameSpeedSlider.oninput = function() {
         gameSpeedPercentage = gameSpeedSlider.valueAsNumber
         gameSpeedSliderOutput.innerText = `${gameSpeedPercentage * 100}%`
-        window.setTimeout(updateFunction, baseGameSpeedInMillis / gameSpeedPercentage)
     }
 
     // Run initial update.
