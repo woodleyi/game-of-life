@@ -168,8 +168,8 @@ function main() {
         if (event.keyCode == pauseKeyCode && !pressedKeys.has(pauseKeyCode)) {
             paused = !paused;
             pressedKeys.add(pauseKeyCode);
-            let pauseTextElement = document.getElementById("pauseText");
-            pauseTextElement.innerText = (paused ? "Unpause" : "Pause") + ": SPACE";
+            let pauseTextElement = document.getElementById("pause-control-output");
+            pauseTextElement.innerText = paused ? "unpause" : "pause";
         }
     };
     // Register an event listener to remove any pressed keys from the cache.

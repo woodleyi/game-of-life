@@ -213,8 +213,8 @@ function main() {
         if (event.keyCode == pauseKeyCode && !pressedKeys.has(pauseKeyCode)) {
             paused = !paused
             pressedKeys.add(pauseKeyCode)
-            let pauseTextElement = document.getElementById("pauseText") as HTMLHeadingElement
-            pauseTextElement.innerText = ( paused ? "Unpause" : "Pause" ) + ": SPACE"
+            let pauseTextElement = document.getElementById("pause-control-output") as HTMLHeadingElement
+            pauseTextElement.innerText = paused ? "unpause" : "pause"
         }
     }
 
