@@ -178,7 +178,7 @@ function main() {
     };
     // Update generations and re-render.
     let baseGameSpeedInMillis = 100;
-    let gameSpeedSlider = document.getElementById('gameSpeedSlider');
+    let gameSpeedSlider = document.getElementById('game-speed-slider');
     let gameSpeedSliderOutput = document.getElementById('game-speed-slider-output');
     var gameSpeedPercentage = gameSpeedSlider.valueAsNumber;
     let updateFunction = function () {

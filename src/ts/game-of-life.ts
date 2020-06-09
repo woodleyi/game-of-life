@@ -225,7 +225,7 @@ function main() {
 
     // Update generations and re-render.
     let baseGameSpeedInMillis = 100
-    let gameSpeedSlider = document.getElementById('gameSpeedSlider') as HTMLInputElement
+    let gameSpeedSlider = document.getElementById('game-speed-slider') as HTMLInputElement
     let gameSpeedSliderOutput = document.getElementById('game-speed-slider-output') as HTMLOutputElement
     var gameSpeedPercentage = gameSpeedSlider.valueAsNumber
     
